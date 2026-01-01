@@ -1,12 +1,12 @@
-import { GoogleGenAI, Chat, GenerateContentResponse, Modality } from "@google/genai";
 
-const API_KEY = process.env.API_KEY || '';
+import { GoogleGenAI, Chat, GenerateContentResponse, Modality } from "@google/genai";
 
 let client: GoogleGenAI | null = null;
 
 const getClient = (): GoogleGenAI => {
   if (!client) {
-    client = new GoogleGenAI({ apiKey: API_KEY });
+    // Initializing Gemini client using process.env.API_KEY directly as per guidelines.
+    client = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
   }
   return client;
 };
@@ -32,7 +32,8 @@ Keep responses concise and suitable for a mobile chat interface.
 export const createChatSession = (): Chat => {
   const ai = getClient();
   return ai.chats.create({
-    model: 'gemini-2.5-flash',
+    // Using gemini-3-flash-preview for general chat tasks.
+    model: 'gemini-3-flash-preview',
     config: {
       systemInstruction: SYSTEM_INSTRUCTION,
     },
@@ -53,7 +54,8 @@ export const getDentalTip = async (): Promise<string> => {
   const ai = getClient();
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      // Using gemini-3-flash-preview for basic text tasks.
+      model: 'gemini-3-flash-preview',
       contents: "Provide a single, short, funny and factual dental health tip or fun fact about teeth. Maximum 30 words. No intro, just the text.",
     });
     return response.text.trim();
@@ -77,13 +79,14 @@ export const explainRecord = async (summary: string, language: string): Promise<
     Record Summary: "${summary}"`;
     
     const textResponse = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      // Using gemini-3-flash-preview for clinical record explanation.
+      model: 'gemini-3-flash-preview',
       contents: prompt
     });
     
     const explanationText = textResponse.text || "I could not generate an explanation at this time.";
 
-    // Step 2: Convert the generated text to speech
+    // Step 2: Convert the generated text to speech using gemini-2.5-flash-preview-tts.
     const ttsResponse = await ai.models.generateContent({
       model: "gemini-2.5-flash-preview-tts",
       contents: [{ parts: [{ text: explanationText }] }],

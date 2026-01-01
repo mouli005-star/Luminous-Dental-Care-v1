@@ -1,3 +1,4 @@
+
 export enum UserRole {
   PATIENT = 'PATIENT',
   ADMIN = 'ADMIN'
@@ -9,17 +10,27 @@ export enum ViewState {
   MEDICATIONS = 'MEDICATIONS',
   RECORDS = 'RECORDS',
   CHAT = 'CHAT',
-  PROFILE = 'PROFILE'
+  PROFILE = 'PROFILE',
+  NOTIFICATION_DETAIL = 'NOTIFICATION_DETAIL',
+  TERMS = 'TERMS',
+  BOOKING_CALENDAR = 'BOOKING_CALENDAR'
+}
+
+export interface PrescribedMed {
+  name: string;
+  duration: string;
 }
 
 export interface Appointment {
   id: string;
   doctorName: string;
   treatmentType: string;
-  date: string; // ISO Date string
+  date: string; // ISO Date string (YYYY-MM-DD)
   time: string;
   status: 'upcoming' | 'completed' | 'cancelled';
-  notes?: string;
+  historySummary?: string;
+  prescribedMedications?: PrescribedMed[];
+  visitNotes?: string;
 }
 
 export interface Medication {
@@ -54,5 +65,16 @@ export interface UserProfile {
   name: string;
   email: string;
   phone: string;
+  age: number | string;
+  profileImage?: string;
   nextCheckup: string | null;
+}
+
+export interface Notification {
+  id: number;
+  text: string;
+  details: string;
+  time: string;
+  read: boolean;
+  type: 'appointment' | 'medication' | 'record' | 'general';
 }
